@@ -126,6 +126,7 @@ const LocationDetail = () => {
               billable={billableRate}
               internal={internalRate}
               bench={benchRate}
+              locationId={locationId}
             />
           </div>
         </div>
