@@ -106,6 +106,7 @@ const Index = () => {
               billable={billableRate}
               internal={internalRate}
               bench={benchRate}
+              locationId={selectedLocation}
             />
           </div>
         </div>

@@ -1,26 +1,42 @@
+import { useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 interface UtilizationGaugeProps {
   billable: number;
   internal: number;
   bench: number;
+  locationId?: string;
   className?: string;
 }
 
-const UtilizationGauge = ({ billable, internal, bench, className }: UtilizationGaugeProps) => {
+const UtilizationGauge = ({ billable, internal, bench, locationId = "all", className }: UtilizationGaugeProps) => {
+  const navigate = useNavigate();
   const totalUtilization = billable + internal;
   const billableHealthy = billable >= 80;
   const utilizationHealthy = totalUtilization >= 90;
+
+  const handleBillableClick = () => {
+    navigate(`/location/${locationId}/billable`);
+  };
 
   return (
     <div className={cn("glass-card rounded-lg p-6 animate-slide-up", className)} style={{ animationDelay: "100ms" }}>
       <h3 className="text-lg font-semibold text-foreground mb-6">Utilization Breakdown</h3>
       
       <div className="relative h-8 bg-secondary rounded-full overflow-hidden mb-6">
-        <div
-          className="absolute left-0 top-0 h-full bg-primary transition-all duration-700 ease-out"
-          style={{ width: `${billable}%` }}
-        />
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <div
+              onClick={handleBillableClick}
+              className="absolute left-0 top-0 h-full bg-primary transition-all duration-700 ease-out cursor-pointer hover:brightness-110"
+              style={{ width: `${billable}%` }}
+            />
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>Click to view billable projects</p>
+          </TooltipContent>
+        </Tooltip>
         <div
           className="absolute top-0 h-full bg-chart-internal transition-all duration-700 ease-out"
           style={{ left: `${billable}%`, width: `${internal}%` }}
@@ -32,7 +48,10 @@ const UtilizationGauge = ({ billable, internal, bench, className }: UtilizationG
       </div>
 
       <div className="grid grid-cols-3 gap-4 mb-6">
-        <div className="flex items-center gap-2">
+        <div 
+          onClick={handleBillableClick}
+          className="flex items-center gap-2 cursor-pointer hover:bg-secondary/50 rounded-lg p-2 -m-2 transition-colors"
+        >
           <div className="w-3 h-3 rounded-full bg-primary" />
           <div>
             <p className="text-xs text-muted-foreground">Billable</p>
