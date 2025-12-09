@@ -1,5 +1,6 @@
 import { useState, useMemo } from "react";
-import { Users, Building2 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { Users, Building2, ChevronRight } from "lucide-react";
 import MetricCard from "@/components/dashboard/MetricCard";
 import UtilizationGauge from "@/components/dashboard/UtilizationGauge";
 import ForecastChart from "@/components/dashboard/ForecastChart";
@@ -9,6 +10,7 @@ import PeriodSelector from "@/components/dashboard/PeriodSelector";
 import { locations, generateForecastData } from "@/lib/mockData";
 
 const Index = () => {
+  const navigate = useNavigate();
   const [selectedLocation, setSelectedLocation] = useState("all");
   const [forecastPeriod, setForecastPeriod] = useState("3");
 
@@ -137,9 +139,13 @@ const Index = () => {
                   return (
                     <tr
                       key={location.id}
-                      className="border-b border-border/50 hover:bg-secondary/50 transition-colors"
+                      onClick={() => navigate(`/location/${location.id}`)}
+                      className="border-b border-border/50 hover:bg-secondary/50 transition-colors cursor-pointer group"
                     >
-                      <td className="py-3 px-4 text-sm font-medium text-foreground">{location.name}</td>
+                      <td className="py-3 px-4 text-sm font-medium text-foreground flex items-center gap-2">
+                        {location.name}
+                        <ChevronRight className="h-4 w-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
+                      </td>
                       <td className="py-3 px-4 text-sm text-right text-foreground">{location.totalResources}</td>
                       <td className="py-3 px-4 text-sm text-right text-primary font-medium">{location.billable}</td>
                       <td className="py-3 px-4 text-sm text-right text-chart-internal">{location.internal}</td>
