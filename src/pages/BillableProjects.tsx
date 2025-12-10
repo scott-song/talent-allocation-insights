@@ -104,16 +104,17 @@ const BillableProjects = () => {
             const StatusIcon = statusConfig.icon;
 
             return (
-              <div
+              <Link
                 key={project.id}
-                className="glass-card rounded-lg p-6 animate-slide-up hover:bg-secondary/30 transition-colors"
+                to={`/location/${locationId}/project/${project.id}`}
+                className="glass-card rounded-lg p-6 animate-slide-up hover:bg-secondary/30 transition-colors block cursor-pointer group"
                 style={{ animationDelay: `${200 + index * 50}ms` }}
               >
                 <div className="flex flex-col lg:flex-row lg:items-center gap-4">
                   {/* Project Info */}
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-3 mb-2">
-                      <h3 className="text-lg font-semibold text-foreground truncate">
+                      <h3 className="text-lg font-semibold text-foreground truncate group-hover:text-primary transition-colors">
                         {project.name}
                       </h3>
                       <span className={cn(
@@ -147,7 +148,7 @@ const BillableProjects = () => {
                     />
                   </div>
                 </div>
-              </div>
+              </Link>
             );
           })}
         </div>

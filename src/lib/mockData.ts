@@ -111,3 +111,48 @@ export const getHealthStatus = (billableRate: number, totalUtilization: number):
     return { status: 'critical', message: 'Immediate attention required' };
   }
 };
+
+export interface ProjectResource {
+  id: string;
+  name: string;
+  role: string;
+  grade: string;
+  hoursPerWeek: number;
+  startDate: string;
+  endDate: string;
+}
+
+const roles = ['Developer', 'Senior Developer', 'Tech Lead', 'Architect', 'Project Manager', 'Business Analyst', 'QA Engineer', 'DevOps Engineer', 'Designer'];
+const grades = ['Junior', 'Mid', 'Senior', 'Lead', 'Principal'];
+const firstNames = ['Alex', 'Jordan', 'Taylor', 'Morgan', 'Casey', 'Riley', 'Quinn', 'Avery', 'Parker', 'Blake', 'Cameron', 'Drew', 'Emery', 'Finley', 'Harper', 'Jamie', 'Kendall', 'Logan', 'Micah', 'Peyton'];
+const lastNames = ['Smith', 'Johnson', 'Williams', 'Brown', 'Jones', 'Garcia', 'Miller', 'Davis', 'Rodriguez', 'Martinez', 'Lee', 'Chen', 'Wang', 'Kim', 'Patel', 'Singh', 'Anderson', 'Taylor', 'Thomas', 'Moore'];
+
+const generateResourcesForProject = (projectId: string, count: number): ProjectResource[] => {
+  const resources: ProjectResource[] = [];
+  for (let i = 0; i < count; i++) {
+    const firstName = firstNames[Math.floor(Math.random() * firstNames.length)];
+    const lastName = lastNames[Math.floor(Math.random() * lastNames.length)];
+    resources.push({
+      id: `${projectId}-res-${i + 1}`,
+      name: `${firstName} ${lastName}`,
+      role: roles[Math.floor(Math.random() * roles.length)],
+      grade: grades[Math.floor(Math.random() * grades.length)],
+      hoursPerWeek: [20, 24, 32, 36, 40][Math.floor(Math.random() * 5)],
+      startDate: '2024-01-15',
+      endDate: '2025-06-30',
+    });
+  }
+  return resources;
+};
+
+export const getProjectResources = (projectId: string): ProjectResource[] => {
+  const allProjects = Object.values(billableProjectsByLocation).flat();
+  const project = allProjects.find(p => p.id === projectId);
+  if (!project) return [];
+  return generateResourcesForProject(projectId, project.resourceCount);
+};
+
+export const getProjectById = (projectId: string): BillableProject | undefined => {
+  const allProjects = Object.values(billableProjectsByLocation).flat();
+  return allProjects.find(p => p.id === projectId);
+};
