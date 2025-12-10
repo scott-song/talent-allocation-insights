@@ -70,8 +70,35 @@ const BillableProjects = () => {
           </div>
         </header>
 
-        {/* Projects Grid */}
+        {/* Key Metrics */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+          <div className="glass-card rounded-lg p-5 animate-slide-up border border-border/50">
+            <p className="text-sm text-muted-foreground mb-1">Total Projects</p>
+            <p className="text-3xl font-bold text-foreground">{projects.length}</p>
+          </div>
+          <div className="glass-card rounded-lg p-5 animate-slide-up border border-success/30" style={{ animationDelay: "50ms" }}>
+            <p className="text-sm text-muted-foreground mb-1">Active</p>
+            <p className="text-3xl font-bold text-success">
+              {projects.filter(p => p.status === 'active').length}
+            </p>
+          </div>
+          <div className="glass-card rounded-lg p-5 animate-slide-up border border-primary/30" style={{ animationDelay: "100ms" }}>
+            <p className="text-sm text-muted-foreground mb-1">Ramping Up</p>
+            <p className="text-3xl font-bold text-primary">
+              {projects.filter(p => p.status === 'ramping-up').length}
+            </p>
+          </div>
+          <div className="glass-card rounded-lg p-5 animate-slide-up border border-warning/30" style={{ animationDelay: "150ms" }}>
+            <p className="text-sm text-muted-foreground mb-1">Ending Soon</p>
+            <p className="text-3xl font-bold text-warning">
+              {projects.filter(p => p.status === 'ending-soon').length}
+            </p>
+          </div>
+        </div>
+
+        {/* Projects Breakdown */}
         <div className="space-y-4">
+          <h3 className="text-lg font-semibold text-foreground mb-4">Project Breakdown</h3>
           {projects.map((project, index) => {
             const statusConfig = getStatusConfig(project.status);
             const StatusIcon = statusConfig.icon;
@@ -80,7 +107,7 @@ const BillableProjects = () => {
               <div
                 key={project.id}
                 className="glass-card rounded-lg p-6 animate-slide-up hover:bg-secondary/30 transition-colors"
-                style={{ animationDelay: `${index * 50}ms` }}
+                style={{ animationDelay: `${200 + index * 50}ms` }}
               >
                 <div className="flex flex-col lg:flex-row lg:items-center gap-4">
                   {/* Project Info */}
@@ -123,35 +150,6 @@ const BillableProjects = () => {
               </div>
             );
           })}
-        </div>
-
-        {/* Summary */}
-        <div className="mt-8 glass-card rounded-lg p-6 animate-fade-in" style={{ animationDelay: "500ms" }}>
-          <h3 className="text-lg font-semibold text-foreground mb-4">Summary</h3>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-            <div>
-              <p className="text-sm text-muted-foreground">Total Projects</p>
-              <p className="text-2xl font-bold text-foreground">{projects.length}</p>
-            </div>
-            <div>
-              <p className="text-sm text-muted-foreground">Active</p>
-              <p className="text-2xl font-bold text-success">
-                {projects.filter(p => p.status === 'active').length}
-              </p>
-            </div>
-            <div>
-              <p className="text-sm text-muted-foreground">Ramping Up</p>
-              <p className="text-2xl font-bold text-primary">
-                {projects.filter(p => p.status === 'ramping-up').length}
-              </p>
-            </div>
-            <div>
-              <p className="text-sm text-muted-foreground">Ending Soon</p>
-              <p className="text-2xl font-bold text-warning">
-                {projects.filter(p => p.status === 'ending-soon').length}
-              </p>
-            </div>
-          </div>
         </div>
       </div>
     </div>
