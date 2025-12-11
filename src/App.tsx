@@ -9,6 +9,7 @@ import LocationDetail from "./pages/LocationDetail";
 import BillableProjects from "./pages/BillableProjects";
 import ResourcePlanning from "./pages/ResourcePlanning";
 import ResourceDetail from "./pages/ResourceDetail";
+import AvailableResources from "./pages/AvailableResources";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -24,6 +25,7 @@ const App = () => (
             <Route path="/" element={<Index />} />
             <Route path="/location/:locationId" element={<LocationDetail />} />
             <Route path="/location/:locationId/billable" element={<BillableProjects />} />
+            <Route path="/location/:locationId/available" element={<AvailableResources />} />
             <Route path="/location/:locationId/project/:projectId" element={<ResourcePlanning />} />
             <Route path="/location/:locationId/project/:projectId/resource/:resourceId" element={<ResourceDetail />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
