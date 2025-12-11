@@ -246,6 +246,65 @@ export const getProjectResources = (projectId: string): ProjectResource[] => {
   return generateResourcesForProject(projectId, project.resourceCount);
 };
 
+export interface CompanyResource {
+  id: string;
+  name: string;
+  role: string;
+  grade: string;
+  location: string;
+  status: 'billable' | 'internal' | 'bench';
+}
+
+export const getAllResources = (): CompanyResource[] => {
+  const resources: CompanyResource[] = [];
+  const locationNames = locations.filter(l => l.id !== 'all').map(l => l.name);
+  
+  // Generate resources based on location totals
+  locations.filter(l => l.id !== 'all').forEach((location) => {
+    // Billable resources
+    for (let i = 0; i < location.billable; i++) {
+      const firstName = firstNames[(i * 7 + location.id.charCodeAt(0)) % firstNames.length];
+      const lastName = lastNames[(i * 11 + location.id.charCodeAt(1)) % lastNames.length];
+      resources.push({
+        id: `${location.id}-billable-${i + 1}`,
+        name: `${firstName} ${lastName}`,
+        role: roles[(i + location.id.charCodeAt(0)) % roles.length],
+        grade: grades[(i + location.id.charCodeAt(2)) % grades.length],
+        location: location.name,
+        status: 'billable',
+      });
+    }
+    // Internal resources
+    for (let i = 0; i < location.internal; i++) {
+      const firstName = firstNames[(i * 5 + location.id.charCodeAt(0) + 3) % firstNames.length];
+      const lastName = lastNames[(i * 9 + location.id.charCodeAt(1) + 5) % lastNames.length];
+      resources.push({
+        id: `${location.id}-internal-${i + 1}`,
+        name: `${firstName} ${lastName}`,
+        role: roles[(i + location.id.charCodeAt(0) + 2) % roles.length],
+        grade: grades[(i + location.id.charCodeAt(2) + 1) % grades.length],
+        location: location.name,
+        status: 'internal',
+      });
+    }
+    // Bench resources
+    for (let i = 0; i < location.bench; i++) {
+      const firstName = firstNames[(i * 3 + location.id.charCodeAt(0) + 7) % firstNames.length];
+      const lastName = lastNames[(i * 7 + location.id.charCodeAt(1) + 11) % lastNames.length];
+      resources.push({
+        id: `${location.id}-bench-${i + 1}`,
+        name: `${firstName} ${lastName}`,
+        role: roles[(i + location.id.charCodeAt(0) + 4) % roles.length],
+        grade: grades[(i + location.id.charCodeAt(2) + 3) % grades.length],
+        location: location.name,
+        status: 'bench',
+      });
+    }
+  });
+  
+  return resources;
+};
+
 export const getProjectById = (projectId: string): BillableProject | undefined => {
   const allProjects = Object.values(billableProjectsByLocation).flat();
   return allProjects.find(p => p.id === projectId);
