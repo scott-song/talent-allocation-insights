@@ -228,7 +228,7 @@ const ResourceDetail = () => {
               </button>
             </CollapsibleTrigger>
             
-            <CollapsibleContent>
+            <CollapsibleContent className="data-[state=open]:animate-accordion-down data-[state=closed]:animate-accordion-up overflow-hidden">
               {/* Period Selector */}
               <div className="p-4 border-b border-border/50 flex flex-col sm:flex-row sm:items-center justify-end gap-4">
                 <div className="flex items-center gap-3">
