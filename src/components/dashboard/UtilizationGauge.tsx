@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip";
 
 interface UtilizationGaugeProps {
   billable: number;
@@ -28,43 +28,45 @@ const UtilizationGauge = ({ billable, internal, bench, locationId = "all", class
     <div className={cn("glass-card rounded-lg p-6 animate-slide-up", className)} style={{ animationDelay: "100ms" }}>
       <h3 className="text-lg font-semibold text-foreground mb-6">Utilization Breakdown</h3>
       
-      <div className="relative h-8 bg-secondary rounded-full mb-6">
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <div
-              onClick={handleBillableClick}
-              className="absolute left-0 top-0 h-full bg-primary rounded-l-full transition-all duration-300 ease-out cursor-pointer hover:brightness-125 hover:-translate-y-1 hover:shadow-lg hover:shadow-primary/50 z-10 hover:z-20"
-              style={{ width: `${billable}%` }}
-            />
-          </TooltipTrigger>
-          <TooltipContent>
-            <p>Click to view billable projects</p>
-          </TooltipContent>
-        </Tooltip>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <div
-              className="absolute top-0 h-full bg-chart-internal transition-all duration-300 ease-out hover:brightness-125 hover:-translate-y-1 hover:shadow-lg hover:shadow-chart-internal/50 z-10 hover:z-20"
-              style={{ left: `${billable}%`, width: `${internal}%` }}
-            />
-          </TooltipTrigger>
-          <TooltipContent>
-            <p>Internal projects</p>
-          </TooltipContent>
-        </Tooltip>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <div
-              onClick={handleBenchClick}
-              className="absolute top-0 h-full bg-chart-bench rounded-r-full transition-all duration-300 ease-out cursor-pointer hover:brightness-125 hover:-translate-y-1 hover:shadow-lg hover:shadow-chart-bench/50 z-10 hover:z-20"
-              style={{ left: `${billable + internal}%`, width: `${bench}%` }}
-            />
-          </TooltipTrigger>
-          <TooltipContent>
-            <p>Click to view available resources</p>
-          </TooltipContent>
-        </Tooltip>
-      </div>
+      <TooltipProvider>
+        <div className="relative h-8 bg-secondary rounded-full mb-6">
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <div
+                onClick={handleBillableClick}
+                className="absolute left-0 top-0 h-full bg-primary rounded-l-full transition-all duration-300 ease-out cursor-pointer hover:brightness-125 hover:-translate-y-1 hover:shadow-lg hover:shadow-primary/50 z-10 hover:z-20"
+                style={{ width: `${billable}%` }}
+              />
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Click to view billable projects</p>
+            </TooltipContent>
+          </Tooltip>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <div
+                className="absolute top-0 h-full bg-chart-internal transition-all duration-300 ease-out hover:brightness-125 hover:-translate-y-1 hover:shadow-lg hover:shadow-chart-internal/50 z-10 hover:z-20"
+                style={{ left: `${billable}%`, width: `${internal}%` }}
+              />
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Internal projects</p>
+            </TooltipContent>
+          </Tooltip>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <div
+                onClick={handleBenchClick}
+                className="absolute top-0 h-full bg-chart-bench rounded-r-full transition-all duration-300 ease-out cursor-pointer hover:brightness-125 hover:-translate-y-1 hover:shadow-lg hover:shadow-chart-bench/50 z-10 hover:z-20"
+                style={{ left: `${billable + internal}%`, width: `${bench}%` }}
+              />
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Click to view available resources</p>
+            </TooltipContent>
+          </Tooltip>
+        </div>
+      </TooltipProvider>
 
       <div className="grid grid-cols-3 gap-4 mb-6">
         <div 
