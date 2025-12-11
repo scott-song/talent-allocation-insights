@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import { useParams, Link } from "react-router-dom";
-import { ArrowLeft, User, Mail, MapPin, Calendar, Briefcase, Clock, Award, Star, FolderOpen, CalendarDays } from "lucide-react";
+import { ArrowLeft, User, Mail, MapPin, Calendar, Briefcase, Clock, Award, Star, FolderOpen, CalendarDays, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
@@ -8,6 +8,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar as CalendarComponent } from "@/components/ui/calendar";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { getResourceDetail, getResourceBookings } from "@/lib/mockData";
 import { cn } from "@/lib/utils";
 import { format, addMonths, startOfMonth } from "date-fns";
@@ -23,6 +24,7 @@ const ResourceDetail = () => {
   const [customStartDate, setCustomStartDate] = useState<Date | undefined>();
   const [customEndDate, setCustomEndDate] = useState<Date | undefined>();
   const [showCustomPicker, setShowCustomPicker] = useState(false);
+  const [isBookingsOpen, setIsBookingsOpen] = useState(false);
 
   const resource = useMemo(() => getResourceDetail(resourceId || ""), [resourceId]);
   const backUrl = `/location/${locationId}/project/${projectId}`;
@@ -181,135 +183,8 @@ const ResourceDetail = () => {
           </div>
         </div>
 
-        {/* Hour Bookings by Period */}
-        <div className="glass-card rounded-lg overflow-hidden animate-slide-up mb-8" style={{ animationDelay: "300ms" }}>
-          <div className="p-4 border-b border-border/50 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div className="flex items-center gap-2">
-              <CalendarDays className="h-5 w-5 text-primary" />
-              <h3 className="text-lg font-semibold text-foreground">Hour Bookings by Period</h3>
-            </div>
-            <div className="flex items-center gap-3">
-              <Select value={bookingPeriod} onValueChange={(value) => {
-                setBookingPeriod(value);
-                if (value !== "custom") {
-                  setShowCustomPicker(false);
-                } else {
-                  setShowCustomPicker(true);
-                }
-              }}>
-                <SelectTrigger className="w-[160px]">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="1">1 Month</SelectItem>
-                  <SelectItem value="2">2 Months</SelectItem>
-                  <SelectItem value="3">3 Months</SelectItem>
-                  <SelectItem value="6">6 Months</SelectItem>
-                  <SelectItem value="custom">Custom Period</SelectItem>
-                </SelectContent>
-              </Select>
-              
-              {showCustomPicker && (
-                <div className="flex items-center gap-2">
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <Button variant="outline" size="sm" className="w-[120px]">
-                        {customStartDate ? format(customStartDate, "MMM d, yyyy") : "Start date"}
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0" align="start">
-                      <CalendarComponent
-                        mode="single"
-                        selected={customStartDate}
-                        onSelect={setCustomStartDate}
-                        initialFocus
-                      />
-                    </PopoverContent>
-                  </Popover>
-                  <span className="text-muted-foreground">to</span>
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <Button variant="outline" size="sm" className="w-[120px]">
-                        {customEndDate ? format(customEndDate, "MMM d, yyyy") : "End date"}
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0" align="start">
-                      <CalendarComponent
-                        mode="single"
-                        selected={customEndDate}
-                        onSelect={setCustomEndDate}
-                        initialFocus
-                      />
-                    </PopoverContent>
-                  </Popover>
-                </div>
-              )}
-            </div>
-          </div>
-          
-          {/* Project Summary */}
-          {bookingData && (
-            <div className="p-4 border-b border-border/50 bg-secondary/20">
-              <div className="flex flex-wrap gap-6">
-                <div>
-                  <p className="text-sm text-muted-foreground">Total Hours</p>
-                  <p className="text-2xl font-bold text-foreground">{bookingData.totalHours}h</p>
-                </div>
-                {bookingData.projectSummary.map((project) => (
-                  <div key={project.projectId}>
-                    <p className="text-sm text-muted-foreground">{project.projectName}</p>
-                    <p className="text-xl font-semibold text-primary">{project.totalHours}h <span className="text-sm text-muted-foreground">({project.percentage}%)</span></p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-          
-          {/* Weekly Breakdown Table */}
-          <div className="overflow-x-auto">
-            <Table>
-              <TableHeader>
-                <TableRow className="border-border/50 hover:bg-transparent">
-                  <TableHead className="text-muted-foreground sticky left-0 bg-card">Week</TableHead>
-                  {bookingData?.projectSummary.map((project) => (
-                    <TableHead key={project.projectId} className="text-muted-foreground text-center">
-                      {project.projectName}
-                    </TableHead>
-                  ))}
-                  <TableHead className="text-muted-foreground text-right">Total</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {bookingData?.weeks.map((week, index) => (
-                  <TableRow 
-                    key={week.weekStart} 
-                    className="border-border/50 hover:bg-secondary/30"
-                  >
-                    <TableCell className="font-medium text-foreground sticky left-0 bg-card whitespace-nowrap">
-                      {format(new Date(week.weekStart), "MMM d")} - {format(new Date(week.weekEnd), "MMM d")}
-                    </TableCell>
-                    {week.projects.map((project) => (
-                      <TableCell key={project.projectId} className="text-center">
-                        <span className={cn(
-                          "font-medium",
-                          project.hours > 0 ? "text-primary" : "text-muted-foreground"
-                        )}>
-                          {project.hours}h
-                        </span>
-                      </TableCell>
-                    ))}
-                    <TableCell className="text-right font-semibold text-foreground">
-                      {week.totalHours}h
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </div>
-        </div>
-
         {/* Current Project Allocations */}
-        <div className="glass-card rounded-lg overflow-hidden animate-slide-up mb-8" style={{ animationDelay: "350ms" }}>
+        <div className="glass-card rounded-lg overflow-hidden animate-slide-up mb-8" style={{ animationDelay: "300ms" }}>
           <div className="p-4 border-b border-border/50 flex items-center gap-2">
             <Clock className="h-5 w-5 text-primary" />
             <h3 className="text-lg font-semibold text-foreground">Current Project Allocations</h3>
@@ -336,6 +211,147 @@ const ResourceDetail = () => {
             ))}
           </div>
         </div>
+
+        {/* Hour Bookings by Period - Collapsible */}
+        <Collapsible open={isBookingsOpen} onOpenChange={setIsBookingsOpen} className="mb-8">
+          <div className="glass-card rounded-lg overflow-hidden animate-slide-up" style={{ animationDelay: "350ms" }}>
+            <CollapsibleTrigger asChild>
+              <button className="w-full p-4 border-b border-border/50 flex items-center justify-between hover:bg-secondary/30 transition-colors">
+                <div className="flex items-center gap-2">
+                  <CalendarDays className="h-5 w-5 text-primary" />
+                  <h3 className="text-lg font-semibold text-foreground">Hour Bookings by Period</h3>
+                </div>
+                <ChevronDown className={cn(
+                  "h-5 w-5 text-muted-foreground transition-transform duration-200",
+                  isBookingsOpen && "rotate-180"
+                )} />
+              </button>
+            </CollapsibleTrigger>
+            
+            <CollapsibleContent>
+              {/* Period Selector */}
+              <div className="p-4 border-b border-border/50 flex flex-col sm:flex-row sm:items-center justify-end gap-4">
+                <div className="flex items-center gap-3">
+                  <Select value={bookingPeriod} onValueChange={(value) => {
+                    setBookingPeriod(value);
+                    if (value !== "custom") {
+                      setShowCustomPicker(false);
+                    } else {
+                      setShowCustomPicker(true);
+                    }
+                  }}>
+                    <SelectTrigger className="w-[160px]">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="1">1 Month</SelectItem>
+                      <SelectItem value="2">2 Months</SelectItem>
+                      <SelectItem value="3">3 Months</SelectItem>
+                      <SelectItem value="6">6 Months</SelectItem>
+                      <SelectItem value="custom">Custom Period</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  
+                  {showCustomPicker && (
+                    <div className="flex items-center gap-2">
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <Button variant="outline" size="sm" className="w-[120px]">
+                            {customStartDate ? format(customStartDate, "MMM d, yyyy") : "Start date"}
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0" align="start">
+                          <CalendarComponent
+                            mode="single"
+                            selected={customStartDate}
+                            onSelect={setCustomStartDate}
+                            initialFocus
+                          />
+                        </PopoverContent>
+                      </Popover>
+                      <span className="text-muted-foreground">to</span>
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <Button variant="outline" size="sm" className="w-[120px]">
+                            {customEndDate ? format(customEndDate, "MMM d, yyyy") : "End date"}
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0" align="start">
+                          <CalendarComponent
+                            mode="single"
+                            selected={customEndDate}
+                            onSelect={setCustomEndDate}
+                            initialFocus
+                          />
+                        </PopoverContent>
+                      </Popover>
+                    </div>
+                  )}
+                </div>
+              </div>
+              
+              {/* Project Summary */}
+              {bookingData && (
+                <div className="p-4 border-b border-border/50 bg-secondary/20">
+                  <div className="flex flex-wrap gap-6">
+                    <div>
+                      <p className="text-sm text-muted-foreground">Total Hours</p>
+                      <p className="text-2xl font-bold text-foreground">{bookingData.totalHours}h</p>
+                    </div>
+                    {bookingData.projectSummary.map((project) => (
+                      <div key={project.projectId}>
+                        <p className="text-sm text-muted-foreground">{project.projectName}</p>
+                        <p className="text-xl font-semibold text-primary">{project.totalHours}h <span className="text-sm text-muted-foreground">({project.percentage}%)</span></p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+              
+              {/* Weekly Breakdown Table */}
+              <div className="overflow-x-auto">
+                <Table>
+                  <TableHeader>
+                    <TableRow className="border-border/50 hover:bg-transparent">
+                      <TableHead className="text-muted-foreground sticky left-0 bg-card">Week</TableHead>
+                      {bookingData?.projectSummary.map((project) => (
+                        <TableHead key={project.projectId} className="text-muted-foreground text-center">
+                          {project.projectName}
+                        </TableHead>
+                      ))}
+                      <TableHead className="text-muted-foreground text-right">Total</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {bookingData?.weeks.map((week) => (
+                      <TableRow 
+                        key={week.weekStart} 
+                        className="border-border/50 hover:bg-secondary/30"
+                      >
+                        <TableCell className="font-medium text-foreground sticky left-0 bg-card whitespace-nowrap">
+                          {format(new Date(week.weekStart), "MMM d")} - {format(new Date(week.weekEnd), "MMM d")}
+                        </TableCell>
+                        {week.projects.map((project) => (
+                          <TableCell key={project.projectId} className="text-center">
+                            <span className={cn(
+                              "font-medium",
+                              project.hours > 0 ? "text-primary" : "text-muted-foreground"
+                            )}>
+                              {project.hours}h
+                            </span>
+                          </TableCell>
+                        ))}
+                        <TableCell className="text-right font-semibold text-foreground">
+                          {week.totalHours}h
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            </CollapsibleContent>
+          </div>
+        </Collapsible>
 
         {/* Experience History */}
         <div className="glass-card rounded-lg overflow-hidden animate-slide-up" style={{ animationDelay: "400ms" }}>
