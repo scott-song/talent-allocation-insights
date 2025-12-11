@@ -1,15 +1,23 @@
 import { useMemo, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { ArrowLeft, Users, Calendar, Clock, Filter } from "lucide-react";
+import { ArrowLeft, Users, Calendar, Clock, Filter, ArrowUpDown, ArrowUp, ArrowDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { getProjectById, getProjectResources, locations } from "@/lib/mockData";
 import { cn } from "@/lib/utils";
 
+type SortField = "name" | "role" | "grade" | "hoursPerWeek";
+type SortDirection = "asc" | "desc";
+
 const ResourcePlanning = () => {
   const { locationId, projectId } = useParams<{ locationId: string; projectId: string }>();
   const [period, setPeriod] = useState("current");
+  const [roleFilter, setRoleFilter] = useState<string>("all");
+  const [gradeFilter, setGradeFilter] = useState<string>("all");
+  const [hoursFilter, setHoursFilter] = useState<string>("all");
+  const [sortField, setSortField] = useState<SortField>("name");
+  const [sortDirection, setSortDirection] = useState<SortDirection>("asc");
 
   const project = useMemo(() => getProjectById(projectId || ""), [projectId]);
   const resources = useMemo(() => getProjectResources(projectId || ""), [projectId]);
@@ -20,8 +28,35 @@ const ResourcePlanning = () => {
 
   const backUrl = `/location/${locationId}/billable`;
 
-  const totalHours = resources.reduce((sum, r) => sum + r.hoursPerWeek, 0);
-  const avgHours = resources.length > 0 ? (totalHours / resources.length).toFixed(1) : 0;
+  // Get unique roles and grades for filters
+  const uniqueRoles = useMemo(() => [...new Set(resources.map(r => r.role))].sort(), [resources]);
+  const uniqueGrades = useMemo(() => [...new Set(resources.map(r => r.grade))].sort(), [resources]);
+
+  // Filter and sort resources
+  const filteredResources = useMemo(() => {
+    let filtered = resources.filter(r => {
+      if (roleFilter !== "all" && r.role !== roleFilter) return false;
+      if (gradeFilter !== "all" && r.grade !== gradeFilter) return false;
+      if (hoursFilter === "full" && r.hoursPerWeek < 40) return false;
+      if (hoursFilter === "part" && r.hoursPerWeek >= 40) return false;
+      return true;
+    });
+
+    filtered.sort((a, b) => {
+      const aVal = a[sortField];
+      const bVal = b[sortField];
+      const modifier = sortDirection === "asc" ? 1 : -1;
+      if (typeof aVal === "number" && typeof bVal === "number") {
+        return (aVal - bVal) * modifier;
+      }
+      return String(aVal).localeCompare(String(bVal)) * modifier;
+    });
+
+    return filtered;
+  }, [resources, roleFilter, gradeFilter, hoursFilter, sortField, sortDirection]);
+
+  const totalHours = filteredResources.reduce((sum, r) => sum + r.hoursPerWeek, 0);
+  const avgHours = filteredResources.length > 0 ? (totalHours / filteredResources.length).toFixed(1) : 0;
 
   const gradeBreakdown = useMemo(() => {
     const counts: Record<string, number> = {};
@@ -30,6 +65,22 @@ const ResourcePlanning = () => {
     });
     return counts;
   }, [resources]);
+
+  const handleSort = (field: SortField) => {
+    if (sortField === field) {
+      setSortDirection(sortDirection === "asc" ? "desc" : "asc");
+    } else {
+      setSortField(field);
+      setSortDirection("asc");
+    }
+  };
+
+  const SortIcon = ({ field }: { field: SortField }) => {
+    if (sortField !== field) return <ArrowUpDown className="h-3 w-3 ml-1 opacity-50" />;
+    return sortDirection === "asc" 
+      ? <ArrowUp className="h-3 w-3 ml-1 text-primary" /> 
+      : <ArrowDown className="h-3 w-3 ml-1 text-primary" />;
+  };
 
   if (!project) {
     return (
@@ -121,54 +172,137 @@ const ResourcePlanning = () => {
 
         {/* Resource Table */}
         <div className="glass-card rounded-lg overflow-hidden animate-slide-up" style={{ animationDelay: "250ms" }}>
-          <div className="p-4 border-b border-border/50 flex items-center justify-between">
-            <h3 className="text-lg font-semibold text-foreground">Resource Allocation</h3>
-            <div className="flex items-center gap-2 text-muted-foreground text-sm">
-              <Clock className="h-4 w-4" />
-              <span>{period === "current" ? "Current Week" : period === "next-week" ? "Next Week" : period === "next-month" ? "Next Month" : "Next Quarter"}</span>
+          <div className="p-4 border-b border-border/50">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <h3 className="text-lg font-semibold text-foreground">Resource Allocation</h3>
+              <div className="flex items-center gap-2 text-muted-foreground text-sm">
+                <Clock className="h-4 w-4" />
+                <span>{period === "current" ? "Current Week" : period === "next-week" ? "Next Week" : period === "next-month" ? "Next Month" : "Next Quarter"}</span>
+              </div>
+            </div>
+            
+            {/* Filters */}
+            <div className="flex flex-wrap items-center gap-3 mt-4">
+              <div className="flex items-center gap-2">
+                <Filter className="h-4 w-4 text-muted-foreground" />
+                <span className="text-sm text-muted-foreground">Filters:</span>
+              </div>
+              <Select value={roleFilter} onValueChange={setRoleFilter}>
+                <SelectTrigger className="w-36 h-8 text-sm bg-secondary/50 border-border/50">
+                  <SelectValue placeholder="All Roles" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Roles</SelectItem>
+                  {uniqueRoles.map(role => (
+                    <SelectItem key={role} value={role}>{role}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <Select value={gradeFilter} onValueChange={setGradeFilter}>
+                <SelectTrigger className="w-36 h-8 text-sm bg-secondary/50 border-border/50">
+                  <SelectValue placeholder="All Grades" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Grades</SelectItem>
+                  {uniqueGrades.map(grade => (
+                    <SelectItem key={grade} value={grade}>{grade}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <Select value={hoursFilter} onValueChange={setHoursFilter}>
+                <SelectTrigger className="w-36 h-8 text-sm bg-secondary/50 border-border/50">
+                  <SelectValue placeholder="All Hours" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Hours</SelectItem>
+                  <SelectItem value="full">Full-time (40h+)</SelectItem>
+                  <SelectItem value="part">Part-time (&lt;40h)</SelectItem>
+                </SelectContent>
+              </Select>
+              {(roleFilter !== "all" || gradeFilter !== "all" || hoursFilter !== "all") && (
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  className="h-8 text-xs"
+                  onClick={() => { setRoleFilter("all"); setGradeFilter("all"); setHoursFilter("all"); }}
+                >
+                  Clear filters
+                </Button>
+              )}
+              <span className="text-xs text-muted-foreground ml-auto">
+                {filteredResources.length} of {resources.length} resources
+              </span>
             </div>
           </div>
           <div className="overflow-x-auto">
             <Table>
               <TableHeader>
                 <TableRow className="border-border/50 hover:bg-transparent">
-                  <TableHead className="text-muted-foreground">Resource Name</TableHead>
-                  <TableHead className="text-muted-foreground">Role</TableHead>
-                  <TableHead className="text-muted-foreground">Grade</TableHead>
-                  <TableHead className="text-muted-foreground text-right">Hours/Week</TableHead>
+                  <TableHead 
+                    className="text-muted-foreground cursor-pointer hover:text-foreground transition-colors"
+                    onClick={() => handleSort("name")}
+                  >
+                    <span className="flex items-center">Resource Name <SortIcon field="name" /></span>
+                  </TableHead>
+                  <TableHead 
+                    className="text-muted-foreground cursor-pointer hover:text-foreground transition-colors"
+                    onClick={() => handleSort("role")}
+                  >
+                    <span className="flex items-center">Role <SortIcon field="role" /></span>
+                  </TableHead>
+                  <TableHead 
+                    className="text-muted-foreground cursor-pointer hover:text-foreground transition-colors"
+                    onClick={() => handleSort("grade")}
+                  >
+                    <span className="flex items-center">Grade <SortIcon field="grade" /></span>
+                  </TableHead>
+                  <TableHead 
+                    className="text-muted-foreground text-right cursor-pointer hover:text-foreground transition-colors"
+                    onClick={() => handleSort("hoursPerWeek")}
+                  >
+                    <span className="flex items-center justify-end">Hours/Week <SortIcon field="hoursPerWeek" /></span>
+                  </TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {resources.map((resource, index) => (
-                  <TableRow 
-                    key={resource.id} 
-                    className="border-border/50 hover:bg-secondary/30 animate-fade-in"
-                    style={{ animationDelay: `${300 + index * 20}ms` }}
-                  >
-                    <TableCell className="font-medium text-foreground">{resource.name}</TableCell>
-                    <TableCell className="text-muted-foreground">{resource.role}</TableCell>
-                    <TableCell>
-                      <span className={cn(
-                        "px-2 py-0.5 rounded text-xs font-medium",
-                        resource.grade === "Principal" || resource.grade === "Lead" 
-                          ? "bg-primary/20 text-primary"
-                          : resource.grade === "Senior" 
-                            ? "bg-success/20 text-success"
-                            : "bg-secondary text-muted-foreground"
-                      )}>
-                        {resource.grade}
-                      </span>
-                    </TableCell>
-                    <TableCell className="text-right">
-                      <span className={cn(
-                        "font-semibold",
-                        resource.hoursPerWeek >= 40 ? "text-foreground" : "text-warning"
-                      )}>
-                        {resource.hoursPerWeek}h
-                      </span>
+                {filteredResources.length === 0 ? (
+                  <TableRow>
+                    <TableCell colSpan={4} className="text-center text-muted-foreground py-8">
+                      No resources match the current filters
                     </TableCell>
                   </TableRow>
-                ))}
+                ) : (
+                  filteredResources.map((resource, index) => (
+                    <TableRow 
+                      key={resource.id} 
+                      className="border-border/50 hover:bg-secondary/30 animate-fade-in"
+                      style={{ animationDelay: `${300 + index * 20}ms` }}
+                    >
+                      <TableCell className="font-medium text-foreground">{resource.name}</TableCell>
+                      <TableCell className="text-muted-foreground">{resource.role}</TableCell>
+                      <TableCell>
+                        <span className={cn(
+                          "px-2 py-0.5 rounded text-xs font-medium",
+                          resource.grade === "Principal" || resource.grade === "Lead" 
+                            ? "bg-primary/20 text-primary"
+                            : resource.grade === "Senior" 
+                              ? "bg-success/20 text-success"
+                              : "bg-secondary text-muted-foreground"
+                        )}>
+                          {resource.grade}
+                        </span>
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <span className={cn(
+                          "font-semibold",
+                          resource.hoursPerWeek >= 40 ? "text-foreground" : "text-warning"
+                        )}>
+                          {resource.hoursPerWeek}h
+                        </span>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                )}
               </TableBody>
             </Table>
           </div>
