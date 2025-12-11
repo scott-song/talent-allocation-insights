@@ -1,10 +1,11 @@
 import { useMemo } from "react";
 import { useParams, Link } from "react-router-dom";
-import { ArrowLeft, Briefcase, TrendingUp, Clock, Rocket } from "lucide-react";
+import { ArrowLeft, Briefcase, TrendingUp, Clock, Rocket, Calendar } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { locations, billableProjectsByLocation } from "@/lib/mockData";
 import { cn } from "@/lib/utils";
+import { format } from "date-fns";
 
 const BillableProjects = () => {
   const { locationId } = useParams<{ locationId: string }>();
@@ -130,14 +131,25 @@ const BillableProjects = () => {
                     </p>
                   </div>
 
+                  {/* Timeline */}
+                  <div className="lg:w-48 shrink-0">
+                    <p className="text-sm text-muted-foreground flex items-center gap-1 mb-1">
+                      <Calendar className="h-3 w-3" />
+                      Timeline
+                    </p>
+                    <p className="text-sm font-medium text-foreground">
+                      {format(new Date(project.startDate), "MMM d, yyyy")} – {format(new Date(project.endDate), "MMM d, yyyy")}
+                    </p>
+                  </div>
+
                   {/* Resources */}
-                  <div className="lg:w-32 shrink-0">
+                  <div className="lg:w-24 shrink-0">
                     <p className="text-sm text-muted-foreground">Resources</p>
                     <p className="text-xl font-semibold text-foreground">{project.resourceCount}</p>
                   </div>
 
                   {/* Contribution */}
-                  <div className="lg:w-64 shrink-0">
+                  <div className="lg:w-48 shrink-0">
                     <div className="flex items-center justify-between mb-2">
                       <p className="text-sm text-muted-foreground">Contribution</p>
                       <p className="text-sm font-semibold text-primary">{project.contribution.toFixed(1)}%</p>
