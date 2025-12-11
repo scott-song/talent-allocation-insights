@@ -128,9 +128,9 @@ const ResourcePlanning = () => {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="current">Current Week</SelectItem>
-                    <SelectItem value="next-week">Next Week</SelectItem>
-                    <SelectItem value="next-month">Next Month</SelectItem>
-                    <SelectItem value="next-quarter">Next Quarter</SelectItem>
+                    <SelectItem value="1-month">One Month</SelectItem>
+                    <SelectItem value="2-months">Two Months</SelectItem>
+                    <SelectItem value="3-months">Three Months</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -178,7 +178,7 @@ const ResourcePlanning = () => {
               <h3 className="text-lg font-semibold text-foreground">Resource Allocation</h3>
               <div className="flex items-center gap-2 text-muted-foreground text-sm">
                 <Clock className="h-4 w-4" />
-                <span>{period === "current" ? "Current Week" : period === "next-week" ? "Next Week" : period === "next-month" ? "Next Month" : "Next Quarter"}</span>
+                <span>{period === "current" ? "Current Week" : period === "1-month" ? "One Month" : period === "2-months" ? "Two Months" : "Three Months"}</span>
               </div>
             </div>
             
