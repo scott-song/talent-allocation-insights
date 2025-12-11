@@ -33,7 +33,7 @@ const UtilizationGauge = ({ billable, internal, bench, locationId = "all", class
           <TooltipTrigger asChild>
             <div
               onClick={handleBillableClick}
-              className="absolute left-0 top-0 h-full bg-primary transition-all duration-700 ease-out cursor-pointer hover:brightness-110"
+              className="absolute left-0 top-0 h-full bg-primary transition-all duration-300 ease-out cursor-pointer hover:brightness-110 hover:scale-y-110 origin-center"
               style={{ width: `${billable}%` }}
             />
           </TooltipTrigger>
@@ -41,15 +41,22 @@ const UtilizationGauge = ({ billable, internal, bench, locationId = "all", class
             <p>Click to view billable projects</p>
           </TooltipContent>
         </Tooltip>
-        <div
-          className="absolute top-0 h-full bg-chart-internal transition-all duration-700 ease-out"
-          style={{ left: `${billable}%`, width: `${internal}%` }}
-        />
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <div
+              className="absolute top-0 h-full bg-chart-internal transition-all duration-300 ease-out hover:brightness-110 hover:scale-y-110 origin-center"
+              style={{ left: `${billable}%`, width: `${internal}%` }}
+            />
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>Internal projects</p>
+          </TooltipContent>
+        </Tooltip>
         <Tooltip>
           <TooltipTrigger asChild>
             <div
               onClick={handleBenchClick}
-              className="absolute top-0 h-full bg-chart-bench transition-all duration-700 ease-out cursor-pointer hover:brightness-110"
+              className="absolute top-0 h-full bg-chart-bench transition-all duration-300 ease-out cursor-pointer hover:brightness-110 hover:scale-y-110 origin-center"
               style={{ left: `${billable + internal}%`, width: `${bench}%` }}
             />
           </TooltipTrigger>
