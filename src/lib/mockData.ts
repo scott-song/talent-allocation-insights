@@ -139,6 +139,30 @@ export interface ResourceAllocation {
   allocation: number;
 }
 
+export interface WeeklyBooking {
+  weekStart: string;
+  weekEnd: string;
+  projects: {
+    projectId: string;
+    projectName: string;
+    client: string;
+    hours: number;
+  }[];
+  totalHours: number;
+}
+
+export interface PeriodBookingData {
+  weeks: WeeklyBooking[];
+  totalHours: number;
+  projectSummary: {
+    projectId: string;
+    projectName: string;
+    client: string;
+    totalHours: number;
+    percentage: number;
+  }[];
+}
+
 export interface ResourceDetail {
   id: string;
   name: string;
@@ -288,4 +312,71 @@ export const getResourceDetail = (resourceId: string): ResourceDetail | null => 
   }
   
   return null;
+};
+
+export const getResourceBookings = (
+  resourceId: string,
+  startDate: Date,
+  endDate: Date
+): PeriodBookingData | null => {
+  const resource = getResourceDetail(resourceId);
+  if (!resource) return null;
+
+  const weeks: WeeklyBooking[] = [];
+  const projectHoursMap: Map<string, { projectName: string; client: string; hours: number }> = new Map();
+  
+  let currentDate = new Date(startDate);
+  // Align to Monday
+  currentDate.setDate(currentDate.getDate() - currentDate.getDay() + 1);
+  
+  while (currentDate <= endDate) {
+    const weekStart = new Date(currentDate);
+    const weekEnd = new Date(currentDate);
+    weekEnd.setDate(weekEnd.getDate() + 4); // Friday
+    
+    const weekProjects = resource.currentAllocations.map((allocation) => {
+      // Add some variance to weekly hours
+      const variance = (resourceId.charCodeAt(0) + currentDate.getDate()) % 5 - 2;
+      const hours = Math.max(0, allocation.hoursPerWeek + variance);
+      
+      // Accumulate for summary
+      const existing = projectHoursMap.get(allocation.projectId);
+      if (existing) {
+        existing.hours += hours;
+      } else {
+        projectHoursMap.set(allocation.projectId, {
+          projectName: allocation.projectName,
+          client: allocation.client,
+          hours,
+        });
+      }
+      
+      return {
+        projectId: allocation.projectId,
+        projectName: allocation.projectName,
+        client: allocation.client,
+        hours,
+      };
+    });
+    
+    weeks.push({
+      weekStart: weekStart.toISOString().split('T')[0],
+      weekEnd: weekEnd.toISOString().split('T')[0],
+      projects: weekProjects,
+      totalHours: weekProjects.reduce((sum, p) => sum + p.hours, 0),
+    });
+    
+    currentDate.setDate(currentDate.getDate() + 7);
+  }
+  
+  const totalHours = weeks.reduce((sum, w) => sum + w.totalHours, 0);
+  const projectSummary = Array.from(projectHoursMap.entries()).map(([projectId, data]) => ({
+    projectId,
+    projectName: data.projectName,
+    client: data.client,
+    totalHours: data.hours,
+    percentage: totalHours > 0 ? Math.round((data.hours / totalHours) * 100) : 0,
+  }));
+  
+  return { weeks, totalHours, projectSummary };
 };
