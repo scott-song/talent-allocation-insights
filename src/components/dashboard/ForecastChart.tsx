@@ -48,7 +48,7 @@ const ForecastChart = ({ data, className }: ForecastChartProps) => {
       <div className="flex items-center justify-between mb-6">
         <div>
           <h3 className="text-lg font-semibold text-foreground">Utilization Forecast</h3>
-          <p className="text-sm text-muted-foreground">Projected resource allocation trends</p>
+          <p className="text-sm text-muted-foreground">Weekly resource allocation trends</p>
         </div>
       </div>
 
@@ -67,10 +67,11 @@ const ForecastChart = ({ data, className }: ForecastChartProps) => {
             </defs>
             <CartesianGrid strokeDasharray="3 3" stroke="hsl(222, 30%, 20%)" vertical={false} />
             <XAxis 
-              dataKey="month" 
+              dataKey="week" 
               axisLine={false}
               tickLine={false}
-              tick={{ fill: "hsl(215, 20%, 55%)", fontSize: 12 }}
+              tick={{ fill: "hsl(215, 20%, 55%)", fontSize: 11 }}
+              interval="preserveStartEnd"
             />
             <YAxis 
               axisLine={false}
@@ -98,6 +99,9 @@ const ForecastChart = ({ data, className }: ForecastChartProps) => {
               stroke="hsl(174, 62%, 47%)"
               strokeWidth={2}
               fill="url(#billableGradient)"
+              isAnimationActive={true}
+              animationDuration={1200}
+              animationEasing="ease-out"
             />
             <Area
               type="monotone"
@@ -107,6 +111,10 @@ const ForecastChart = ({ data, className }: ForecastChartProps) => {
               stroke="hsl(220, 70%, 55%)"
               strokeWidth={2}
               fill="url(#internalGradient)"
+              isAnimationActive={true}
+              animationDuration={1200}
+              animationEasing="ease-out"
+              animationBegin={200}
             />
           </AreaChart>
         </ResponsiveContainer>
