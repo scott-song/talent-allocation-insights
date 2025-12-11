@@ -28,12 +28,12 @@ const UtilizationGauge = ({ billable, internal, bench, locationId = "all", class
     <div className={cn("glass-card rounded-lg p-6 animate-slide-up", className)} style={{ animationDelay: "100ms" }}>
       <h3 className="text-lg font-semibold text-foreground mb-6">Utilization Breakdown</h3>
       
-      <div className="relative h-8 bg-secondary rounded-full overflow-hidden mb-6">
+      <div className="relative h-8 bg-secondary rounded-full mb-6">
         <Tooltip>
           <TooltipTrigger asChild>
             <div
               onClick={handleBillableClick}
-              className="absolute left-0 top-0 h-full bg-primary transition-all duration-300 ease-out cursor-pointer hover:brightness-110 hover:scale-y-110 origin-center"
+              className="absolute left-0 top-0 h-full bg-primary rounded-l-full transition-all duration-300 ease-out cursor-pointer hover:brightness-125 hover:-translate-y-1 hover:shadow-lg hover:shadow-primary/50 z-10 hover:z-20"
               style={{ width: `${billable}%` }}
             />
           </TooltipTrigger>
@@ -44,7 +44,7 @@ const UtilizationGauge = ({ billable, internal, bench, locationId = "all", class
         <Tooltip>
           <TooltipTrigger asChild>
             <div
-              className="absolute top-0 h-full bg-chart-internal transition-all duration-300 ease-out hover:brightness-110 hover:scale-y-110 origin-center"
+              className="absolute top-0 h-full bg-chart-internal transition-all duration-300 ease-out hover:brightness-125 hover:-translate-y-1 hover:shadow-lg hover:shadow-chart-internal/50 z-10 hover:z-20"
               style={{ left: `${billable}%`, width: `${internal}%` }}
             />
           </TooltipTrigger>
@@ -56,7 +56,7 @@ const UtilizationGauge = ({ billable, internal, bench, locationId = "all", class
           <TooltipTrigger asChild>
             <div
               onClick={handleBenchClick}
-              className="absolute top-0 h-full bg-chart-bench transition-all duration-300 ease-out cursor-pointer hover:brightness-110 hover:scale-y-110 origin-center"
+              className="absolute top-0 h-full bg-chart-bench rounded-r-full transition-all duration-300 ease-out cursor-pointer hover:brightness-125 hover:-translate-y-1 hover:shadow-lg hover:shadow-chart-bench/50 z-10 hover:z-20"
               style={{ left: `${billable + internal}%`, width: `${bench}%` }}
             />
           </TooltipTrigger>
