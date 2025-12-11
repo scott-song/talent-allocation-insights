@@ -192,7 +192,7 @@ export interface ResourceDetail {
 }
 
 const roles = ['Developer', 'Senior Developer', 'Tech Lead', 'Architect', 'Project Manager', 'Business Analyst', 'QA Engineer', 'DevOps Engineer', 'Designer'];
-const grades = ['Junior', 'Mid', 'Senior', 'Lead', 'Principal'];
+const grades = ['T1', 'T2', 'T3', 'T4', 'E1', 'E2', 'U1', 'U2'];
 const firstNames = ['Alex', 'Jordan', 'Taylor', 'Morgan', 'Casey', 'Riley', 'Quinn', 'Avery', 'Parker', 'Blake', 'Cameron', 'Drew', 'Emery', 'Finley', 'Harper', 'Jamie', 'Kendall', 'Logan', 'Micah', 'Peyton'];
 const lastNames = ['Smith', 'Johnson', 'Williams', 'Brown', 'Jones', 'Garcia', 'Miller', 'Davis', 'Rodriguez', 'Martinez', 'Lee', 'Chen', 'Wang', 'Kim', 'Patel', 'Singh', 'Anderson', 'Taylor', 'Thomas', 'Moore'];
 
