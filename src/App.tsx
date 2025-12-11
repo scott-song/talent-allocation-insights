@@ -28,6 +28,7 @@ const App = () => (
             <Route path="/location/:locationId/available" element={<AvailableResources />} />
             <Route path="/location/:locationId/project/:projectId" element={<ResourcePlanning />} />
             <Route path="/location/:locationId/project/:projectId/resource/:resourceId" element={<ResourceDetail />} />
+            <Route path="/location/:locationId/resource/:resourceId" element={<ResourceDetail />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

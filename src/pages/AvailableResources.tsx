@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import { ArrowLeft, User, Search, Filter, Clock, Briefcase, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -17,6 +17,7 @@ const periodOptions = ["Current", "Next 2 Weeks", "Next Month", "Next Quarter"];
 
 const AvailableResources = () => {
   const { locationId } = useParams<{ locationId: string }>();
+  const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
   const [jobFamily, setJobFamily] = useState("All");
   const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
@@ -226,8 +227,9 @@ const AvailableResources = () => {
                 filteredResources.map((resource, index) => (
                   <TableRow 
                     key={resource.id} 
-                    className="border-border hover:bg-secondary/30 transition-colors animate-fade-in"
+                    className="border-border hover:bg-secondary/30 transition-colors animate-fade-in cursor-pointer"
                     style={{ animationDelay: `${index * 30}ms` }}
+                    onClick={() => navigate(`/location/${locationId}/resource/${resource.id}`)}
                   >
                     <TableCell>
                       <div className="flex items-center gap-3">
