@@ -287,11 +287,13 @@ const ResourcePlanning = () => {
                       <TableCell>
                         <span className={cn(
                           "px-2 py-0.5 rounded text-xs font-medium",
-                          resource.grade === "Principal" || resource.grade === "Lead" 
+                          resource.grade === "E1" || resource.grade === "E2" 
                             ? "bg-primary/20 text-primary"
-                            : resource.grade === "Senior" 
+                            : resource.grade === "T4" || resource.grade === "T3"
                               ? "bg-success/20 text-success"
-                              : "bg-secondary text-muted-foreground"
+                              : resource.grade === "U1" || resource.grade === "U2"
+                                ? "bg-warning/20 text-warning"
+                                : "bg-secondary text-muted-foreground"
                         )}>
                           {resource.grade}
                         </span>
