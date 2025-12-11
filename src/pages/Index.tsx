@@ -79,6 +79,7 @@ const Index = () => {
             trend={billableRate >= 80 ? 3.2 : -1.5}
             type="billable"
             delay={50}
+            onClick={() => navigate(`/location/${selectedLocation}/billable`)}
           />
           <MetricCard
             title="Internal Projects"
@@ -95,6 +96,7 @@ const Index = () => {
             trend={benchRate <= 10 ? 1.2 : -2.1}
             type="bench"
             delay={150}
+            onClick={() => navigate(`/location/${selectedLocation}/available`)}
           />
         </div>
 
