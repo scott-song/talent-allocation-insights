@@ -20,6 +20,10 @@ const UtilizationGauge = ({ billable, internal, bench, locationId = "all", class
     navigate(`/location/${locationId}/billable`);
   };
 
+  const handleBenchClick = () => {
+    navigate(`/location/${locationId}/available`);
+  };
+
   return (
     <div className={cn("glass-card rounded-lg p-6 animate-slide-up", className)} style={{ animationDelay: "100ms" }}>
       <h3 className="text-lg font-semibold text-foreground mb-6">Utilization Breakdown</h3>
@@ -41,10 +45,18 @@ const UtilizationGauge = ({ billable, internal, bench, locationId = "all", class
           className="absolute top-0 h-full bg-chart-internal transition-all duration-700 ease-out"
           style={{ left: `${billable}%`, width: `${internal}%` }}
         />
-        <div
-          className="absolute top-0 h-full bg-chart-bench transition-all duration-700 ease-out"
-          style={{ left: `${billable + internal}%`, width: `${bench}%` }}
-        />
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <div
+              onClick={handleBenchClick}
+              className="absolute top-0 h-full bg-chart-bench transition-all duration-700 ease-out cursor-pointer hover:brightness-110"
+              style={{ left: `${billable + internal}%`, width: `${bench}%` }}
+            />
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>Click to view available resources</p>
+          </TooltipContent>
+        </Tooltip>
       </div>
 
       <div className="grid grid-cols-3 gap-4 mb-6">
@@ -65,7 +77,10 @@ const UtilizationGauge = ({ billable, internal, bench, locationId = "all", class
             <p className="text-lg font-semibold text-foreground">{internal.toFixed(1)}%</p>
           </div>
         </div>
-        <div className="flex items-center gap-2">
+        <div 
+          onClick={handleBenchClick}
+          className="flex items-center gap-2 cursor-pointer hover:bg-secondary/50 rounded-lg p-2 -m-2 transition-colors"
+        >
           <div className="w-3 h-3 rounded-full bg-chart-bench" />
           <div>
             <p className="text-xs text-muted-foreground">Bench</p>

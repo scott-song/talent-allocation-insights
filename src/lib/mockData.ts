@@ -389,3 +389,51 @@ export const getResourceBookings = (
   
   return { weeks, totalHours, projectSummary };
 };
+
+export interface AvailableResource {
+  id: string;
+  name: string;
+  email: string;
+  role: string;
+  grade: string;
+  department: string;
+  skills: string[];
+  availableHours: number;
+  availableFrom: string;
+}
+
+const departments = ["Engineering", "Design", "Product", "Operations", "Data"];
+
+export const getAvailableResources = (locationId: string): AvailableResource[] => {
+  const location = locations.find(l => l.id === locationId) || locations[0];
+  const benchCount = location.bench;
+  const resources: AvailableResource[] = [];
+
+  for (let i = 0; i < benchCount; i++) {
+    const seed = locationId.charCodeAt(0) + i;
+    const firstName = firstNames[(seed * 7) % firstNames.length];
+    const lastName = lastNames[(seed * 11) % lastNames.length];
+    const role = roles[(seed * 3) % roles.length];
+    const grade = grades[(seed * 5) % grades.length];
+    const department = departments[(seed * 2) % departments.length];
+    const roleSkills = skillSets[role] || skillSets['Developer'];
+    
+    // Random available hours: some full-time, some partial
+    const hoursOptions = [8, 16, 20, 24, 32, 40, 40, 40];
+    const availableHours = hoursOptions[(seed + i) % hoursOptions.length];
+
+    resources.push({
+      id: `bench-${locationId}-${i + 1}`,
+      name: `${firstName} ${lastName}`,
+      email: `${firstName.toLowerCase()}.${lastName.toLowerCase()}@company.com`,
+      role,
+      grade,
+      department,
+      skills: roleSkills.slice(0, 3 + (seed % 4)),
+      availableHours,
+      availableFrom: "Immediately",
+    });
+  }
+
+  return resources;
+};
