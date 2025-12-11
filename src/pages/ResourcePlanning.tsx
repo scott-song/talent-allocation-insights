@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
-import { useParams, Link } from "react-router-dom";
-import { ArrowLeft, Users, Calendar, Clock, Filter, ArrowUpDown, ArrowUp, ArrowDown } from "lucide-react";
+import { useParams, Link, useNavigate } from "react-router-dom";
+import { ArrowLeft, Users, Calendar, Clock, Filter, ArrowUpDown, ArrowUp, ArrowDown, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -12,6 +12,7 @@ type SortDirection = "asc" | "desc";
 
 const ResourcePlanning = () => {
   const { locationId, projectId } = useParams<{ locationId: string; projectId: string }>();
+  const navigate = useNavigate();
   const [period, setPeriod] = useState("current");
   const [roleFilter, setRoleFilter] = useState<string>("all");
   const [gradeFilter, setGradeFilter] = useState<string>("all");
@@ -275,10 +276,13 @@ const ResourcePlanning = () => {
                   filteredResources.map((resource, index) => (
                     <TableRow 
                       key={resource.id} 
-                      className="border-border/50 hover:bg-secondary/30 animate-fade-in"
+                      className="border-border/50 hover:bg-secondary/30 animate-fade-in cursor-pointer group"
                       style={{ animationDelay: `${300 + index * 20}ms` }}
+                      onClick={() => navigate(`/location/${locationId}/project/${projectId}/resource/${resource.id}`)}
                     >
-                      <TableCell className="font-medium text-foreground">{resource.name}</TableCell>
+                      <TableCell className="font-medium text-foreground group-hover:text-primary transition-colors">
+                        {resource.name}
+                      </TableCell>
                       <TableCell className="text-muted-foreground">{resource.role}</TableCell>
                       <TableCell>
                         <span className={cn(
@@ -293,12 +297,15 @@ const ResourcePlanning = () => {
                         </span>
                       </TableCell>
                       <TableCell className="text-right">
-                        <span className={cn(
-                          "font-semibold",
-                          resource.hoursPerWeek >= 40 ? "text-foreground" : "text-warning"
-                        )}>
-                          {resource.hoursPerWeek}h
-                        </span>
+                        <div className="flex items-center justify-end gap-2">
+                          <span className={cn(
+                            "font-semibold",
+                            resource.hoursPerWeek >= 40 ? "text-foreground" : "text-warning"
+                          )}>
+                            {resource.hoursPerWeek}h
+                          </span>
+                          <ChevronRight className="h-4 w-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
+                        </div>
                       </TableCell>
                     </TableRow>
                   ))

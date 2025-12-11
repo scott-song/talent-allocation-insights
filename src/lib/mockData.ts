@@ -122,26 +122,85 @@ export interface ProjectResource {
   endDate: string;
 }
 
+export interface ResourceExperience {
+  projectName: string;
+  client: string;
+  role: string;
+  startDate: string;
+  endDate: string;
+  duration: string;
+}
+
+export interface ResourceAllocation {
+  projectId: string;
+  projectName: string;
+  client: string;
+  hoursPerWeek: number;
+  allocation: number;
+}
+
+export interface ResourceDetail {
+  id: string;
+  name: string;
+  email: string;
+  role: string;
+  grade: string;
+  department: string;
+  location: string;
+  joinDate: string;
+  skills: string[];
+  certifications: string[];
+  experience: ResourceExperience[];
+  currentAllocations: ResourceAllocation[];
+  totalAllocatedHours: number;
+  availableHours: number;
+}
+
 const roles = ['Developer', 'Senior Developer', 'Tech Lead', 'Architect', 'Project Manager', 'Business Analyst', 'QA Engineer', 'DevOps Engineer', 'Designer'];
 const grades = ['Junior', 'Mid', 'Senior', 'Lead', 'Principal'];
 const firstNames = ['Alex', 'Jordan', 'Taylor', 'Morgan', 'Casey', 'Riley', 'Quinn', 'Avery', 'Parker', 'Blake', 'Cameron', 'Drew', 'Emery', 'Finley', 'Harper', 'Jamie', 'Kendall', 'Logan', 'Micah', 'Peyton'];
 const lastNames = ['Smith', 'Johnson', 'Williams', 'Brown', 'Jones', 'Garcia', 'Miller', 'Davis', 'Rodriguez', 'Martinez', 'Lee', 'Chen', 'Wang', 'Kim', 'Patel', 'Singh', 'Anderson', 'Taylor', 'Thomas', 'Moore'];
 
+const skillSets: Record<string, string[]> = {
+  Developer: ['JavaScript', 'TypeScript', 'React', 'Node.js', 'Python', 'SQL', 'Git'],
+  'Senior Developer': ['JavaScript', 'TypeScript', 'React', 'Node.js', 'AWS', 'Docker', 'Kubernetes', 'CI/CD'],
+  'Tech Lead': ['System Design', 'Architecture', 'Team Leadership', 'Agile', 'React', 'Node.js', 'AWS', 'Microservices'],
+  Architect: ['Enterprise Architecture', 'Cloud Architecture', 'AWS', 'Azure', 'System Design', 'Security', 'Scalability'],
+  'Project Manager': ['Project Planning', 'Agile/Scrum', 'Stakeholder Management', 'Risk Management', 'Jira', 'MS Project'],
+  'Business Analyst': ['Requirements Analysis', 'Data Analysis', 'SQL', 'Tableau', 'Process Mapping', 'User Stories'],
+  'QA Engineer': ['Test Automation', 'Selenium', 'Jest', 'Cypress', 'API Testing', 'Performance Testing'],
+  'DevOps Engineer': ['AWS', 'Docker', 'Kubernetes', 'Terraform', 'Jenkins', 'GitHub Actions', 'Linux'],
+  Designer: ['Figma', 'UI/UX Design', 'Design Systems', 'Prototyping', 'User Research', 'Adobe Creative Suite'],
+};
+
+const certifications: string[] = ['AWS Solutions Architect', 'AWS Developer Associate', 'Google Cloud Professional', 'PMP', 'Scrum Master', 'Azure Administrator', 'Kubernetes Administrator', 'TOGAF'];
+
+const pastClients = ['GlobalTech', 'FinanceFirst', 'HealthPlus', 'RetailGiant', 'TechStartup', 'MediaCorp', 'EnergyOne', 'AutoDrive'];
+
+// Cache resources by project to maintain consistency
+const resourceCache: Map<string, ProjectResource[]> = new Map();
+
 const generateResourcesForProject = (projectId: string, count: number): ProjectResource[] => {
+  if (resourceCache.has(projectId)) {
+    return resourceCache.get(projectId)!;
+  }
+  
   const resources: ProjectResource[] = [];
   for (let i = 0; i < count; i++) {
-    const firstName = firstNames[Math.floor(Math.random() * firstNames.length)];
-    const lastName = lastNames[Math.floor(Math.random() * lastNames.length)];
+    const firstName = firstNames[(i * 7 + projectId.charCodeAt(0)) % firstNames.length];
+    const lastName = lastNames[(i * 11 + projectId.charCodeAt(1)) % lastNames.length];
     resources.push({
       id: `${projectId}-res-${i + 1}`,
       name: `${firstName} ${lastName}`,
-      role: roles[Math.floor(Math.random() * roles.length)],
-      grade: grades[Math.floor(Math.random() * grades.length)],
-      hoursPerWeek: [20, 24, 32, 36, 40][Math.floor(Math.random() * 5)],
+      role: roles[(i + projectId.charCodeAt(0)) % roles.length],
+      grade: grades[(i + projectId.charCodeAt(2)) % grades.length],
+      hoursPerWeek: [20, 24, 32, 36, 40][(i + projectId.charCodeAt(0)) % 5],
       startDate: '2024-01-15',
       endDate: '2025-06-30',
     });
   }
+  
+  resourceCache.set(projectId, resources);
   return resources;
 };
 
@@ -155,4 +214,78 @@ export const getProjectResources = (projectId: string): ProjectResource[] => {
 export const getProjectById = (projectId: string): BillableProject | undefined => {
   const allProjects = Object.values(billableProjectsByLocation).flat();
   return allProjects.find(p => p.id === projectId);
+};
+
+export const getResourceDetail = (resourceId: string): ResourceDetail | null => {
+  // Find the resource from any project
+  const allProjects = Object.values(billableProjectsByLocation).flat();
+  
+  for (const project of allProjects) {
+    const resources = getProjectResources(project.id);
+    const resource = resources.find(r => r.id === resourceId);
+    
+    if (resource) {
+      const roleSkills = skillSets[resource.role] || skillSets['Developer'];
+      const randomCerts = certifications.filter((_, i) => (i + resourceId.charCodeAt(0)) % 3 === 0).slice(0, 2);
+      
+      // Generate experience history
+      const experience: ResourceExperience[] = [];
+      const numExperiences = 2 + (resourceId.charCodeAt(0) % 3);
+      for (let i = 0; i < numExperiences; i++) {
+        const client = pastClients[(i + resourceId.charCodeAt(0)) % pastClients.length];
+        experience.push({
+          projectName: `${client} ${['Platform', 'Migration', 'Transformation', 'Integration'][i % 4]}`,
+          client,
+          role: roles[(i + resourceId.charCodeAt(1)) % roles.length],
+          startDate: `202${2 - i}-0${1 + i * 3}-01`,
+          endDate: i === 0 ? '2023-12-31' : `202${3 - i}-0${6 + i * 2}-30`,
+          duration: `${6 + i * 3} months`,
+        });
+      }
+      
+      // Current allocations (can be on multiple projects)
+      const currentAllocations: ResourceAllocation[] = [{
+        projectId: project.id,
+        projectName: project.name,
+        client: project.client,
+        hoursPerWeek: resource.hoursPerWeek,
+        allocation: Math.round((resource.hoursPerWeek / 40) * 100),
+      }];
+      
+      // Add secondary project allocation for some resources
+      if (resource.hoursPerWeek < 40 && resourceId.charCodeAt(0) % 2 === 0) {
+        const otherProject = allProjects.find(p => p.id !== project.id);
+        if (otherProject) {
+          currentAllocations.push({
+            projectId: otherProject.id,
+            projectName: otherProject.name,
+            client: otherProject.client,
+            hoursPerWeek: 40 - resource.hoursPerWeek,
+            allocation: Math.round(((40 - resource.hoursPerWeek) / 40) * 100),
+          });
+        }
+      }
+      
+      const totalAllocated = currentAllocations.reduce((sum, a) => sum + a.hoursPerWeek, 0);
+      
+      return {
+        id: resource.id,
+        name: resource.name,
+        email: `${resource.name.toLowerCase().replace(' ', '.')}@company.com`,
+        role: resource.role,
+        grade: resource.grade,
+        department: ['Engineering', 'Product', 'Design', 'Operations'][(resourceId.charCodeAt(0)) % 4],
+        location: locations[(resourceId.charCodeAt(0)) % locations.length].name,
+        joinDate: `202${resourceId.charCodeAt(0) % 4}-0${1 + (resourceId.charCodeAt(1) % 9)}-15`,
+        skills: roleSkills,
+        certifications: randomCerts,
+        experience,
+        currentAllocations,
+        totalAllocatedHours: totalAllocated,
+        availableHours: Math.max(0, 40 - totalAllocated),
+      };
+    }
+  }
+  
+  return null;
 };
