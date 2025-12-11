@@ -10,6 +10,7 @@ import BillableProjects from "./pages/BillableProjects";
 import ResourcePlanning from "./pages/ResourcePlanning";
 import ResourceDetail from "./pages/ResourceDetail";
 import AvailableResources from "./pages/AvailableResources";
+import AllResources from "./pages/AllResources";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -23,6 +24,7 @@ const App = () => (
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Index />} />
+            <Route path="/resources" element={<AllResources />} />
             <Route path="/location/:locationId" element={<LocationDetail />} />
             <Route path="/location/:locationId/billable" element={<BillableProjects />} />
             <Route path="/location/:locationId/available" element={<AvailableResources />} />

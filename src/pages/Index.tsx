@@ -71,6 +71,7 @@ const Index = () => {
             subtitle={currentLocation.name}
             trend={2.5}
             delay={0}
+            onClick={() => navigate("/resources")}
           />
           <MetricCard
             title="Billable"
