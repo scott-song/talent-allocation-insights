@@ -21,6 +21,8 @@ export interface BillableProject {
   resourceCount: number;
   contribution: number;
   status: 'active' | 'ending-soon' | 'ramping-up';
+  startDate: string;
+  endDate: string;
 }
 
 export const locations: LocationData[] = [
@@ -33,44 +35,44 @@ export const locations: LocationData[] = [
 
 export const billableProjectsByLocation: Record<string, BillableProject[]> = {
   all: [
-    { id: "prj-1", name: "Enterprise Cloud Migration", client: "Acme Corp", resourceCount: 45, contribution: 14.1, status: "active" },
-    { id: "prj-2", name: "Digital Banking Platform", client: "First National Bank", resourceCount: 38, contribution: 11.9, status: "active" },
-    { id: "prj-3", name: "E-commerce Modernization", client: "RetailMax", resourceCount: 32, contribution: 10.0, status: "active" },
-    { id: "prj-4", name: "AI Analytics Suite", client: "DataDrive Inc", resourceCount: 28, contribution: 8.8, status: "ramping-up" },
-    { id: "prj-5", name: "Supply Chain Optimization", client: "LogiCorp", resourceCount: 25, contribution: 7.8, status: "active" },
-    { id: "prj-6", name: "Healthcare Portal", client: "MedTech Solutions", resourceCount: 22, contribution: 6.9, status: "ending-soon" },
-    { id: "prj-7", name: "Insurance Claims System", client: "SafeGuard Insurance", resourceCount: 20, contribution: 6.3, status: "active" },
-    { id: "prj-8", name: "CRM Implementation", client: "SalesForce Partners", resourceCount: 18, contribution: 5.6, status: "active" },
-    { id: "prj-9", name: "Mobile App Development", client: "TechStart", resourceCount: 15, contribution: 4.7, status: "ramping-up" },
-    { id: "prj-10", name: "Infrastructure Audit", client: "SecureNet", resourceCount: 12, contribution: 3.8, status: "ending-soon" },
+    { id: "prj-1", name: "Enterprise Cloud Migration", client: "Acme Corp", resourceCount: 45, contribution: 14.1, status: "active", startDate: "2024-03-01", endDate: "2025-08-31" },
+    { id: "prj-2", name: "Digital Banking Platform", client: "First National Bank", resourceCount: 38, contribution: 11.9, status: "active", startDate: "2024-01-15", endDate: "2025-06-30" },
+    { id: "prj-3", name: "E-commerce Modernization", client: "RetailMax", resourceCount: 32, contribution: 10.0, status: "active", startDate: "2024-06-01", endDate: "2025-12-31" },
+    { id: "prj-4", name: "AI Analytics Suite", client: "DataDrive Inc", resourceCount: 28, contribution: 8.8, status: "ramping-up", startDate: "2025-11-01", endDate: "2026-10-31" },
+    { id: "prj-5", name: "Supply Chain Optimization", client: "LogiCorp", resourceCount: 25, contribution: 7.8, status: "active", startDate: "2024-04-15", endDate: "2025-09-30" },
+    { id: "prj-6", name: "Healthcare Portal", client: "MedTech Solutions", resourceCount: 22, contribution: 6.9, status: "ending-soon", startDate: "2024-02-01", endDate: "2025-01-31" },
+    { id: "prj-7", name: "Insurance Claims System", client: "SafeGuard Insurance", resourceCount: 20, contribution: 6.3, status: "active", startDate: "2024-07-01", endDate: "2025-12-15" },
+    { id: "prj-8", name: "CRM Implementation", client: "SalesForce Partners", resourceCount: 18, contribution: 5.6, status: "active", startDate: "2024-05-01", endDate: "2025-07-31" },
+    { id: "prj-9", name: "Mobile App Development", client: "TechStart", resourceCount: 15, contribution: 4.7, status: "ramping-up", startDate: "2025-12-01", endDate: "2026-06-30" },
+    { id: "prj-10", name: "Infrastructure Audit", client: "SecureNet", resourceCount: 12, contribution: 3.8, status: "ending-soon", startDate: "2024-09-01", endDate: "2025-02-28" },
   ],
   nyc: [
-    { id: "prj-nyc-1", name: "Enterprise Cloud Migration", client: "Acme Corp", resourceCount: 25, contribution: 22.7, status: "active" },
-    { id: "prj-nyc-2", name: "Digital Banking Platform", client: "First National Bank", resourceCount: 22, contribution: 20.0, status: "active" },
-    { id: "prj-nyc-3", name: "Insurance Claims System", client: "SafeGuard Insurance", resourceCount: 18, contribution: 16.4, status: "active" },
-    { id: "prj-nyc-4", name: "CRM Implementation", client: "SalesForce Partners", resourceCount: 15, contribution: 13.6, status: "ramping-up" },
-    { id: "prj-nyc-5", name: "Infrastructure Audit", client: "SecureNet", resourceCount: 10, contribution: 9.1, status: "ending-soon" },
+    { id: "prj-nyc-1", name: "Enterprise Cloud Migration", client: "Acme Corp", resourceCount: 25, contribution: 22.7, status: "active", startDate: "2024-03-01", endDate: "2025-08-31" },
+    { id: "prj-nyc-2", name: "Digital Banking Platform", client: "First National Bank", resourceCount: 22, contribution: 20.0, status: "active", startDate: "2024-01-15", endDate: "2025-06-30" },
+    { id: "prj-nyc-3", name: "Insurance Claims System", client: "SafeGuard Insurance", resourceCount: 18, contribution: 16.4, status: "active", startDate: "2024-07-01", endDate: "2025-12-15" },
+    { id: "prj-nyc-4", name: "CRM Implementation", client: "SalesForce Partners", resourceCount: 15, contribution: 13.6, status: "ramping-up", startDate: "2025-12-01", endDate: "2026-05-31" },
+    { id: "prj-nyc-5", name: "Infrastructure Audit", client: "SecureNet", resourceCount: 10, contribution: 9.1, status: "ending-soon", startDate: "2024-09-01", endDate: "2025-02-28" },
   ],
   sf: [
-    { id: "prj-sf-1", name: "AI Analytics Suite", client: "DataDrive Inc", resourceCount: 22, contribution: 25.0, status: "ramping-up" },
-    { id: "prj-sf-2", name: "E-commerce Modernization", client: "RetailMax", resourceCount: 20, contribution: 22.7, status: "active" },
-    { id: "prj-sf-3", name: "Mobile App Development", client: "TechStart", resourceCount: 18, contribution: 20.5, status: "active" },
-    { id: "prj-sf-4", name: "Cloud Security Audit", client: "CyberShield", resourceCount: 15, contribution: 17.0, status: "active" },
-    { id: "prj-sf-5", name: "DevOps Transformation", client: "FastDeploy", resourceCount: 13, contribution: 14.8, status: "ending-soon" },
+    { id: "prj-sf-1", name: "AI Analytics Suite", client: "DataDrive Inc", resourceCount: 22, contribution: 25.0, status: "ramping-up", startDate: "2025-11-01", endDate: "2026-10-31" },
+    { id: "prj-sf-2", name: "E-commerce Modernization", client: "RetailMax", resourceCount: 20, contribution: 22.7, status: "active", startDate: "2024-06-01", endDate: "2025-12-31" },
+    { id: "prj-sf-3", name: "Mobile App Development", client: "TechStart", resourceCount: 18, contribution: 20.5, status: "active", startDate: "2024-08-01", endDate: "2025-10-31" },
+    { id: "prj-sf-4", name: "Cloud Security Audit", client: "CyberShield", resourceCount: 15, contribution: 17.0, status: "active", startDate: "2024-10-01", endDate: "2025-09-30" },
+    { id: "prj-sf-5", name: "DevOps Transformation", client: "FastDeploy", resourceCount: 13, contribution: 14.8, status: "ending-soon", startDate: "2024-04-01", endDate: "2025-01-15" },
   ],
   london: [
-    { id: "prj-lon-1", name: "Digital Banking Platform", client: "First National Bank", resourceCount: 18, contribution: 25.0, status: "active" },
-    { id: "prj-lon-2", name: "Supply Chain Optimization", client: "LogiCorp", resourceCount: 16, contribution: 22.2, status: "active" },
-    { id: "prj-lon-3", name: "Healthcare Portal", client: "MedTech Solutions", resourceCount: 14, contribution: 19.4, status: "ending-soon" },
-    { id: "prj-lon-4", name: "Regulatory Compliance", client: "FinanceFirst", resourceCount: 12, contribution: 16.7, status: "active" },
-    { id: "prj-lon-5", name: "Data Warehouse Migration", client: "InfoBank", resourceCount: 12, contribution: 16.7, status: "ramping-up" },
+    { id: "prj-lon-1", name: "Digital Banking Platform", client: "First National Bank", resourceCount: 18, contribution: 25.0, status: "active", startDate: "2024-01-15", endDate: "2025-06-30" },
+    { id: "prj-lon-2", name: "Supply Chain Optimization", client: "LogiCorp", resourceCount: 16, contribution: 22.2, status: "active", startDate: "2024-04-15", endDate: "2025-09-30" },
+    { id: "prj-lon-3", name: "Healthcare Portal", client: "MedTech Solutions", resourceCount: 14, contribution: 19.4, status: "ending-soon", startDate: "2024-02-01", endDate: "2025-01-31" },
+    { id: "prj-lon-4", name: "Regulatory Compliance", client: "FinanceFirst", resourceCount: 12, contribution: 16.7, status: "active", startDate: "2024-05-01", endDate: "2025-11-30" },
+    { id: "prj-lon-5", name: "Data Warehouse Migration", client: "InfoBank", resourceCount: 12, contribution: 16.7, status: "ramping-up", startDate: "2025-11-15", endDate: "2026-08-31" },
   ],
   singapore: [
-    { id: "prj-sg-1", name: "E-commerce Modernization", client: "RetailMax Asia", resourceCount: 15, contribution: 30.0, status: "active" },
-    { id: "prj-sg-2", name: "Mobile Payment Platform", client: "PayQuick", resourceCount: 12, contribution: 24.0, status: "active" },
-    { id: "prj-sg-3", name: "Logistics Dashboard", client: "ShipFast", resourceCount: 10, contribution: 20.0, status: "ramping-up" },
-    { id: "prj-sg-4", name: "Customer Analytics", client: "InsightCo", resourceCount: 8, contribution: 16.0, status: "active" },
-    { id: "prj-sg-5", name: "API Integration", client: "ConnectHub", resourceCount: 5, contribution: 10.0, status: "ending-soon" },
+    { id: "prj-sg-1", name: "E-commerce Modernization", client: "RetailMax Asia", resourceCount: 15, contribution: 30.0, status: "active", startDate: "2024-06-01", endDate: "2025-12-31" },
+    { id: "prj-sg-2", name: "Mobile Payment Platform", client: "PayQuick", resourceCount: 12, contribution: 24.0, status: "active", startDate: "2024-03-15", endDate: "2025-08-31" },
+    { id: "prj-sg-3", name: "Logistics Dashboard", client: "ShipFast", resourceCount: 10, contribution: 20.0, status: "ramping-up", startDate: "2025-10-01", endDate: "2026-04-30" },
+    { id: "prj-sg-4", name: "Customer Analytics", client: "InsightCo", resourceCount: 8, contribution: 16.0, status: "active", startDate: "2024-07-01", endDate: "2025-06-30" },
+    { id: "prj-sg-5", name: "API Integration", client: "ConnectHub", resourceCount: 5, contribution: 10.0, status: "ending-soon", startDate: "2024-08-01", endDate: "2025-02-15" },
   ],
 };
 
