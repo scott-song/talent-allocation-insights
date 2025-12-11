@@ -8,7 +8,7 @@ export interface LocationData {
 }
 
 export interface ForecastData {
-  month: string;
+  week: string;
   billable: number;
   internal: number;
   bench: number;
@@ -77,19 +77,28 @@ export const billableProjectsByLocation: Record<string, BillableProject[]> = {
 export const generateForecastData = (months: number, locationId: string): ForecastData[] => {
   const location = locations.find(l => l.id === locationId) || locations[0];
   const baseData: ForecastData[] = [];
-  const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-  const currentMonth = new Date().getMonth();
+  const weeksCount = months * 4; // ~4 weeks per month
+  const currentDate = new Date();
+  
+  // Align to Monday
+  currentDate.setDate(currentDate.getDate() - currentDate.getDay() + 1);
 
-  for (let i = 0; i < months; i++) {
-    const monthIndex = (currentMonth + i) % 12;
-    const variance = (Math.random() - 0.5) * 10;
+  for (let i = 0; i < weeksCount; i++) {
+    const weekDate = new Date(currentDate);
+    weekDate.setDate(weekDate.getDate() + i * 7);
+    
+    // Seed-based variance for consistency
+    const seed = weekDate.getDate() + weekDate.getMonth() * 31;
+    const variance = ((seed % 20) - 10) / 2;
     
     const billableRate = Math.min(95, Math.max(65, (location.billable / location.totalResources) * 100 + variance));
-    const internalRate = Math.min(20, Math.max(5, (location.internal / location.totalResources) * 100 + (Math.random() - 0.5) * 5));
+    const internalRate = Math.min(20, Math.max(5, (location.internal / location.totalResources) * 100 + ((seed % 10) - 5) / 2));
     const benchRate = 100 - billableRate - internalRate;
 
+    const weekLabel = `${weekDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`;
+
     baseData.push({
-      month: monthNames[monthIndex],
+      week: weekLabel,
       billable: Math.round(billableRate * 10) / 10,
       internal: Math.round(internalRate * 10) / 10,
       bench: Math.round(benchRate * 10) / 10,
