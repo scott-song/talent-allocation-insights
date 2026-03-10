@@ -1,11 +1,15 @@
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Users, Filter, ArrowUpDown, ArrowUp, ArrowDown, ChevronRight } from "lucide-react";
+import { Users, Filter, ArrowUpDown, ArrowUp, ArrowDown, ChevronRight, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogClose } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { locations, getAllResources } from "@/lib/mockData";
 import { cn } from "@/lib/utils";
+import AppLayout from "@/components/AppLayout";
 
 type SortField = "name" | "role" | "grade" | "location" | "status";
 type SortDirection = "asc" | "desc";
