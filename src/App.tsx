@@ -11,6 +11,7 @@ import ResourcePlanning from "./pages/ResourcePlanning";
 import ResourceDetail from "./pages/ResourceDetail";
 import AvailableResources from "./pages/AvailableResources";
 import AllResources from "./pages/AllResources";
+import AllProjects from "./pages/AllProjects";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
