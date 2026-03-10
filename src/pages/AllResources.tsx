@@ -22,6 +22,7 @@ const AllResources = () => {
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [sortField, setSortField] = useState<SortField>("name");
   const [sortDirection, setSortDirection] = useState<SortDirection>("asc");
+  const [createOpen, setCreateOpen] = useState(false);
 
   const allResources = useMemo(() => getAllResources(), []);
 
