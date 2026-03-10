@@ -73,16 +73,10 @@ const AllResources = () => {
   }, [allResources]);
 
   return (
-    <div className="min-h-screen bg-background">
+    <AppLayout>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <header className="mb-8 animate-fade-in">
-          <Button asChild variant="ghost" className="mb-4 -ml-3">
-            <a onClick={() => navigate(-1)} className="cursor-pointer">
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              Back to Dashboard
-            </a>
-          </Button>
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
               <h1 className="text-3xl font-bold text-foreground flex items-center gap-3">
@@ -95,6 +89,10 @@ const AllResources = () => {
                 Complete list of all company resources
               </p>
             </div>
+            <Button onClick={() => setCreateOpen(true)} className="gap-2">
+              <Plus className="h-4 w-4" />
+              New Resource
+            </Button>
           </div>
         </header>
 
