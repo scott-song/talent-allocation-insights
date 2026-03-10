@@ -7,7 +7,7 @@ import ForecastChart from "@/components/dashboard/ForecastChart";
 import HealthIndicator from "@/components/dashboard/HealthIndicator";
 import LocationSelector from "@/components/dashboard/LocationSelector";
 import PeriodSelector from "@/components/dashboard/PeriodSelector";
-import { ThemeToggle } from "@/components/ThemeToggle";
+import AppLayout from "@/components/AppLayout";
 import { locations, generateForecastData } from "@/lib/mockData";
 
 const Index = () => {
@@ -31,7 +31,7 @@ const Index = () => {
   const totalUtilization = billableRate + internalRate;
 
   return (
-    <div className="min-h-screen bg-background">
+    <AppLayout>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <header className="mb-8 animate-fade-in">
@@ -50,7 +50,6 @@ const Index = () => {
             <div className="flex items-center gap-3">
               <LocationSelector value={selectedLocation} onChange={setSelectedLocation} />
               <PeriodSelector value={forecastPeriod} onChange={setForecastPeriod} />
-              <ThemeToggle />
             </div>
           </div>
         </header>
@@ -180,7 +179,7 @@ const Index = () => {
           </div>
         </div>
       </div>
-    </div>
+    </AppLayout>
   );
 };
 
