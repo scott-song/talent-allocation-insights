@@ -279,7 +279,52 @@ const AllResources = () => {
           </div>
         </div>
       </div>
-    </div>
+
+      {/* Create Resource Dialog */}
+      <Dialog open={createOpen} onOpenChange={setCreateOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Add New Resource</DialogTitle>
+            <DialogDescription>Add a new resource to the company directory.</DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="resource-name">Full Name</Label>
+              <Input id="resource-name" placeholder="Enter full name" />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="resource-role">Role</Label>
+                <Input id="resource-role" placeholder="e.g. Developer" />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="resource-grade">Grade</Label>
+                <Input id="resource-grade" placeholder="e.g. T2" />
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="resource-location">Location</Label>
+              <Select>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select location" />
+                </SelectTrigger>
+                <SelectContent>
+                  {locations.filter(l => l.id !== "all").map(loc => (
+                    <SelectItem key={loc.id} value={loc.name}>{loc.name}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+          <DialogFooter>
+            <DialogClose asChild>
+              <Button variant="outline">Cancel</Button>
+            </DialogClose>
+            <Button onClick={() => setCreateOpen(false)}>Add Resource</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </AppLayout>
   );
 };
 
