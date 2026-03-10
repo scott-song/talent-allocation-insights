@@ -7,7 +7,7 @@ import ForecastChart from "@/components/dashboard/ForecastChart";
 import HealthIndicator from "@/components/dashboard/HealthIndicator";
 import LocationSelector from "@/components/dashboard/LocationSelector";
 import PeriodSelector from "@/components/dashboard/PeriodSelector";
-import { ThemeToggle } from "@/components/ThemeToggle";
+import AppLayout from "@/components/AppLayout";
 import { locations, generateForecastData } from "@/lib/mockData";
 
 const Index = () => {
